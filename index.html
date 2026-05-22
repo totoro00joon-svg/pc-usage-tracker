@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1f6f8b" />
+    <title>PC 사용 기록장</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero" aria-labelledby="appTitle">
+        <div class="hero-copy">
+          <p class="eyebrow">PC Usage Tracker</p>
+          <h1 id="appTitle">PC 사용 기록장</h1>
+          <p class="subcopy">컴퓨터 시작과 종료 시간을 클릭으로 기록하고 사용 흐름을 확인하세요.</p>
+        </div>
+        <div class="today-card">
+          <span id="todayLabel"></span>
+          <strong id="todayStatus">시작 전</strong>
+        </div>
+      </section>
+
+      <section class="quick-panel" aria-label="빠른 기록">
+        <button id="startButton" class="quick-button start" type="button">
+          <span>시작 클릭</span>
+          <small>현재 시간을 시작으로 기록</small>
+        </button>
+        <button id="endButton" class="quick-button end" type="button">
+          <span>종료 클릭</span>
+          <small>현재 시간을 종료로 기록</small>
+        </button>
+      </section>
+
+      <section class="editor-panel" aria-labelledby="editorTitle">
+        <div class="section-title">
+          <h2 id="editorTitle">기록 입력 및 수정</h2>
+          <p>잘못 누른 시간은 여기서 직접 고칠 수 있습니다.</p>
+        </div>
+
+        <form id="usageForm" class="record-form">
+          <label class="field">
+            <span>날짜</span>
+            <input id="usageDate" type="date" required />
+          </label>
+
+          <div class="time-grid">
+            <fieldset class="time-field">
+              <legend>시작시간</legend>
+              <div class="wheel-row">
+                <select id="startHour" aria-label="시작 시"></select>
+                <span>:</span>
+                <select id="startMinute" aria-label="시작 분"></select>
+              </div>
+            </fieldset>
+
+            <fieldset class="time-field">
+              <legend>종료시간</legend>
+              <div class="wheel-row">
+                <select id="endHour" aria-label="종료 시"></select>
+                <span>:</span>
+                <select id="endMinute" aria-label="종료 분"></select>
+              </div>
+            </fieldset>
+          </div>
+
+          <label class="field">
+            <span>사용 유형</span>
+            <select id="usageType">
+              <option value="업무">업무</option>
+              <option value="공부">공부</option>
+              <option value="개인작업">개인작업</option>
+              <option value="게임">게임</option>
+              <option value="기타">기타</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>메모</span>
+            <input id="note" type="text" maxlength="60" placeholder="예: 보고서 작업, 강의 수강" />
+          </label>
+
+          <div class="button-row">
+            <button id="saveButton" class="primary" type="submit">기록 저장</button>
+            <button id="cancelEditButton" class="ghost" type="button" hidden>수정 취소</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="summary-grid" aria-label="요약">
+        <div class="summary-card">
+          <span>오늘 사용</span>
+          <strong id="todayDuration">0분</strong>
+        </div>
+        <div class="summary-card">
+          <span>이번 달 총 사용</span>
+          <strong id="monthTotal">0분</strong>
+        </div>
+        <div class="summary-card">
+          <span>최근 7일 평균</span>
+          <strong id="weekAverage">0분</strong>
+        </div>
+        <div class="summary-card">
+          <span>가장 오래 사용한 날</span>
+          <strong id="longestDay">-</strong>
+        </div>
+      </section>
+
+      <section class="trend-panel" aria-labelledby="trendTitle">
+        <div class="section-title">
+          <h2 id="trendTitle">트렌드 분석</h2>
+          <p>최근 7일 사용시간과 유형별 누적 시간을 봅니다.</p>
+        </div>
+        <div class="trend-layout">
+          <div class="chart-card">
+            <h3>최근 7일</h3>
+            <div id="weeklyChart" class="bar-chart"></div>
+          </div>
+          <div class="chart-card">
+            <h3>사용 유형별 누적</h3>
+            <div id="typeSummary" class="type-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="records-panel" aria-labelledby="recordsTitle">
+        <div class="toolbar">
+          <div>
+            <h2 id="recordsTitle">기록 관리</h2>
+            <p id="recordCount">저장된 기록 0개</p>
+          </div>
+          <div class="tool-actions">
+            <input id="searchInput" type="search" placeholder="날짜, 유형, 메모 검색" />
+            <button id="exportButton" class="ghost" type="button">CSV 내보내기</button>
+            <button id="clearButton" class="danger" type="button">전체 삭제</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>날짜</th>
+                <th>시작</th>
+                <th>종료</th>
+                <th>사용시간</th>
+                <th>유형</th>
+                <th>메모</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="recordTable"></tbody>
+          </table>
+          <div id="emptyState" class="empty-state">아직 저장된 PC 사용 기록이 없습니다.</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

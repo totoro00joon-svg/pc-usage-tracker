@@ -1,0 +1,19 @@
+{
+  "name": "PC 사용 기록장",
+  "short_name": "PC 기록",
+  "description": "컴퓨터 시작과 종료 시간을 기록하고 사용 트렌드를 분석하는 앱",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#edf4f6",
+  "theme_color": "#1f6f8b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
